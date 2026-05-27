@@ -1,0 +1,34 @@
+{
+  "name": "cord-db-js",
+  "version": "1.0.0",
+  "description": "A simple and powerful Firebase Realtime Database wrapper for JavaScript/Node.js.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.js --format cjs,esm --dts --clean",
+    "dev": "tsup src/index.js --format cjs,esm --watch --dts",
+    "lint": "tsc"
+  },
+  "keywords": [
+    "database",
+    "firebase",
+    "realtime",
+    "cord-db-js",
+    "db",
+    "simple-db"
+  ],
+  "author": "slow3rxq",
+  "license": "MIT",
+  "dependencies": {
+    "firebase-admin": "^12.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3"
+  }
+}
