@@ -21,7 +21,7 @@
     "db",
     "simple-db"
   ],
-  "author": "slow3rxq",
+  "author": "abdulrahmanemin",
   "license": "MIT",
   "dependencies": {
     "firebase-admin": "^12.7.0"
