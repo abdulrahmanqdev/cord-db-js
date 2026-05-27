@@ -1,17 +1,23 @@
 import admin from "firebase-admin";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 
-/**
- * @typedef {Object} CordDBConfig
- * @property {string} databaseURL - Firebase Realtime Database URL
- * @property {Object|string} serviceAccount - Service Account Key object or path to JSON file
- */
+function getCallerDirectory() {
+  const originalPrepare = Error.prepareStackTrace;
+  Error.prepareStackTrace = (_, stack) => stack;
+  const err = new Error();
+  Error.captureStackTrace(err, getCallerDirectory);
+  const stack = err.stack;
+  Error.prepareStackTrace = originalPrepare;
+  const caller = stack[2];
+  if (caller) {
+    return path.dirname(caller.getFileName());
+  }
+  return process.cwd();
+}
 
 export class CordDB {
-  /**
-   * @param {CordDBConfig} config 
-   */
   constructor(config) {
     if (!config.databaseURL) {
       throw new Error("CordDB: databaseURL is required in config.");
@@ -22,28 +28,29 @@ export class CordDB {
 
     let credential;
 
-    // Eğer string ise dosya yolu olarak kabul et ve oku
     if (typeof config.serviceAccount === "string") {
-      const resolvedPath = path.resolve(config.serviceAccount);
+      let resolvedPath = config.serviceAccount;
+      if (!path.isAbsolute(resolvedPath)) {
+        const callerDir = getCallerDirectory();
+        resolvedPath = path.resolve(callerDir, resolvedPath);
+      }
       if (!fs.existsSync(resolvedPath)) {
         throw new Error(`CordDB: Service account file not found at ${resolvedPath}`);
       }
       credential = admin.credential.cert(resolvedPath);
     } else {
-            // Değilse direkt obje olarak kabul et
-            credential = admin.credential.cert(config.serviceAccount);
-        }
-
-        // Initialize Firebase Admin
-        if (admin.apps.length === 0) {
-            admin.initializeApp({
-                credential: credential,
-                databaseURL: config.databaseURL
-            });
-        }
-
-        this.db = admin.database();
+      credential = admin.credential.cert(config.serviceAccount);
     }
+
+    if (admin.apps.length === 0) {
+      admin.initializeApp({
+        credential: credential,
+        databaseURL: config.databaseURL
+      });
+    }
+
+    this.db = admin.database();
+  }
 
     /**
      * Veritabanına veri kaydeder.
