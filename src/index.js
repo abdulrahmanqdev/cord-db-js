@@ -7,12 +7,24 @@ function getCallerDirectory() {
   const originalPrepare = Error.prepareStackTrace;
   Error.prepareStackTrace = (_, stack) => stack;
   const err = new Error();
-  Error.captureStackTrace(err, getCallerDirectory);
   const stack = err.stack;
   Error.prepareStackTrace = originalPrepare;
-  const caller = stack[2];
-  if (caller) {
-    return path.dirname(caller.getFileName());
+
+  if (stack && stack.length > 0) {
+    for (const frame of stack) {
+      const fileName = frame.getFileName();
+      if (fileName && 
+          !fileName.includes('node_modules/cord-db-js') && 
+          !fileName.includes('node:internal') &&
+          !fileName.includes('index.js')) {
+        
+        let finalPath = fileName;
+        if (finalPath.startsWith("file://")) {
+          finalPath = fileURLToPath(finalPath);
+        }
+        return path.dirname(finalPath);
+      }
+    }
   }
   return process.cwd();
 }
