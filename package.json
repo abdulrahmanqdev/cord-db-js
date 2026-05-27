@@ -1,6 +1,6 @@
 {
   "name": "cord-db-js",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "A simple and powerful Firebase Realtime Database wrapper for JavaScript/Node.js.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -30,5 +30,12 @@
     "@types/node": "^25.9.1",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdulrahmanqdev/cord-db-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/abdulrahmanqdev/cord-db-js/issues"
   }
 }
